@@ -5,6 +5,8 @@ app.service('GameManager', function (CharactersService) {
         characters: CharactersService.getCharacters(),
         propertyList: CharactersService.getPropertyList(),
     };
+    _game.message = "Can you guess?"
+    var _taunt = ["You Suck", "You're going to have to do better", "Weak!", "hahah!"];
 
     this.newGame = function () {
         setRandomChoice();
@@ -25,14 +27,16 @@ app.service('GameManager', function (CharactersService) {
     }
 
     this.checkProperty = function (prop) {
-        _game.traitsCost = 2;
         if (gameOver()) { return }
-
-        console.log(prop)
-
-
+        // console.log(prop)
         _game.guesses += _game.traitsCost;
         _game.traitsCost++;
+        var min = 0;
+        var max = _taunt.length;
+        var rand2 = Math.floor(Math.random() * (max - min)) + min;
+        _game.message = _taunt[rand2];
+        
+
              
         
         /**  CAN GUESS
@@ -42,15 +46,40 @@ app.service('GameManager', function (CharactersService) {
          * Dont forget to add the traitCost to the _game.guesses
          * setting _game.message will provide the user with feedback
          */
-        
+        var hasProp = false;
+        for (var i = 0; i < _computerChoice.traits.length; i++) {
+            console.log(_computerChoice.traits[i])
+            if (_computerChoice.traits[i] === prop.name) {
+                hasProp = true;
+                prop.used = true
+            }
+        }
         /**  _COMPUTERCHOICE has TRAIT
          * _computerChocie.traits === [String, String]
          * check if _computerChoice.traits has the selected prop.name if so set hasProp = true;
          * also set prop.used = true to disable the same trait check
          */
 
-        var hasProp = false;
+
         var found = false;
+        for (var i = 0; i < _game.characters.length; i++) {
+            found = false;
+            var character = _game.characters[i];
+            for (var j = 0; j < character.traits.length; j++) {
+                var trait = character.traits[j];
+                if (trait === prop.name) {
+                    found = true;
+                }
+            }
+            if (hasProp && !found) {
+                character.possible = false;
+                console.log(character)
+            }
+            if (!hasProp && found) {
+                character.possible = false;
+            }
+
+        }
         
         /** EACH CHARACTER HAS TRAIT
          * now check each _game.characters individually
@@ -67,6 +96,14 @@ app.service('GameManager', function (CharactersService) {
     }
 
     function reset() {
+        for (var i = 0; i < _game.characters.length; i++) {
+            _game.characters[i].possible = true;
+        }
+        for (var key in _game.propertyList) {
+            _game.propertyList[key].used = false;
+        }
+        _game.guesses = 0;
+        _game.traitsCost = 2;
         /**
          * Reset all of the values on _game
          * each character on _game.characters should set to 
@@ -78,12 +115,14 @@ app.service('GameManager', function (CharactersService) {
     }
 
     function gameOver() {
-        if(_game.guesses < 10){
+        if (_game.guesses < 20) {
             return false;
-        }else{
-            return true;
+        } if (_game.victory) {
+            _game.computerChoice = _computerChoice;
         }
-		/**
+        return true;
+    
+        /**
          * make sure the guesses are less than 10 
          * return true if the game should be over
          * if the game.victory 

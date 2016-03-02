@@ -14,7 +14,7 @@
 			<div class="pull-right">
 				<button ng-click="startGame()" ng-show="!game">Start Game</button>
 				<button ng-click="startGame()" ng-show="game">New Game</button>
-				<div class="alert" ng-show="game" ng-class="{'alert-success': game.guesses < 5, 'alert-warning': game.guesses >= 5 && game.guesses < 8, 'alert-danger': game.guesses >= 8 }">Guesses Remaining: {{10 - game.guesses}} {{game.message}}
+				<div class="alert" ng-show="game" ng-class="{'alert-success': game.guesses < 5, 'alert-warning': game.guesses >= 5 && game.guesses < 8, 'alert-danger': game.guesses >= 8 }">Guesses Remaining: {{20 - game.guesses}} {{game.message}}
 				</div>
 			</div>
 			<h3>Guess Who</h3>
