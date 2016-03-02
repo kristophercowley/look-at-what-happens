@@ -104,6 +104,7 @@ app.service('GameManager', function (CharactersService) {
         }
         _game.guesses = 0;
         _game.traitsCost = 2;
+        _game.computerChoice = false;
         /**
          * Reset all of the values on _game
          * each character on _game.characters should set to 
@@ -115,11 +116,15 @@ app.service('GameManager', function (CharactersService) {
     }
 
     function gameOver() {
-        if (_game.guesses < 20) {
+        if (_game.guesses < 10) {
             return false;
-        } if (_game.victory) {
+        } if (_game.guesses >= 10) {
+            alert("You Lose");
+        }
+        if (_game.victory) {
             _game.computerChoice = _computerChoice;
         }
+
         return true;
     
         /**
